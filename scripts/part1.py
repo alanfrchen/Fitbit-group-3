@@ -24,15 +24,43 @@ print(total_distance_by_user)
 # plt.tight_layout()
 # plt.show()
 
-def user_friendly(user_id):
-    # dates_of_this_user = database.loc[database["Id"] == user_id, "ActivityDate"]
-    plt.plot(database.loc[database["Id"] == user_id, "ActivityDate"], database.loc[database["Id"] == user_id, "Calories"])
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# One-time: make sure ActivityDate is a datetime column
+# (Do this once after reading the CSV)
+database["ActivityDate"] = pd.to_datetime(database["ActivityDate"], errors="coerce")
+
+def user_friendly(user_id, start_date=None, end_date=None):
+    df = database.loc[database["Id"] == user_id, ["ActivityDate", "Calories"]].dropna()
+
+    if df.empty:
+        print(f"No data found for user {user_id}")
+        return
+
+    if start_date is not None:
+        start_date = pd.to_datetime(start_date)
+        df = df[df["ActivityDate"] >= start_date]
+
+    if end_date is not None:
+        end_date = pd.to_datetime(end_date)
+        df = df[df["ActivityDate"] <= end_date]
+
+    if df.empty:
+        print(f"No data for user {user_id} in the selected date range.")
+        return
+
+    df = df.sort_values("ActivityDate")
+
+    plt.figure(figsize=(10, 5))
+    plt.plot(df["ActivityDate"], df["Calories"], marker="o")
     plt.xlabel("Date")
     plt.ylabel("Calories burnt")
     plt.title(f"Calories burnt per day by user {user_id}")
-    plt.xticks(rotation=90)
+    plt.xticks(rotation=45)
     plt.tight_layout()
     plt.show()
+
 
 def lazy_sunday():
     ids = database["Id"].unique()
@@ -54,5 +82,5 @@ def lazy_sunday():
     plt.show()
     # plt.plot(last_values["Id"].astype(str), last_values["Calories"], marker="o")
 # user_friendly(1927972279)
-#luud is cool
-lazy_sunday()
+# lazy_sunday()
+user_friendly(1927972279, start_date="2016-04-01", end_date="2016-04-11")
