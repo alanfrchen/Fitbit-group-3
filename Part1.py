@@ -54,4 +54,5 @@ def lazy_sunday():
     plt.show()
     # plt.plot(last_values["Id"].astype(str), last_values["Calories"], marker="o")
 # user_friendly(1927972279)
+#luud is cool
 lazy_sunday()
