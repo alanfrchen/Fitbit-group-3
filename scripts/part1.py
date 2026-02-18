@@ -1,8 +1,14 @@
 from scipy.stats import bernoulli
 import matplotlib.pyplot as plt
 import math
+import numpy as np
 import pandas as pd
 from datetime import timedelta
+from numpy import random
+import pandas as pd
+import statsmodels.api as sm
+import numpy as np
+import matplotlib.pyplot as plt 
 
 database = pd.read_csv("daily_acivity.csv")
 unique_users = database["Id"].nunique()
@@ -66,3 +72,21 @@ def lazy_sunday():
 # user_friendly(1927972279)
 # lazy_sunday()
 user_friendly(1927972279, start_date="2016-04-01", end_date="2016-04-11")
+
+
+database = pd.read_csv("daily_acivity.csv")
+unique_users = database["Id"].nunique()
+print("Number of unique users:", unique_users)
+
+def calc_cal(database):
+    y = database['Calories']
+    TotalSteps = database[['TotalSteps']].copy()
+    Id_placeholder = pd.get_dummies(database['Id'], prefix='Id', drop_first=True) #1 if user 0 if not
+    TotalSteps = pd.concat([TotalSteps, Id_placeholder], axis = 1)
+    TotalSteps = sm.add_constant(TotalSteps)
+    TotalSteps = TotalSteps.astype(float)
+    model = sm.OLS(y , TotalSteps).fit()
+    print(model.summary())
+    return model
+calc_cal(database)
+    
