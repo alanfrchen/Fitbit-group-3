@@ -1,46 +1,32 @@
-# 🏃 Fitbit Data Analysis & Dashboard
+# Fitbit Data Analysis & Dashboard
 
-This repository contains a data analysis pipeline and a Streamlit-based dashboard designed to analyze health metrics from 33 respondents of a 2016 Fitbit survey. The project investigates relationships between physical activity, sleep quality, and environmental factors like weather .
+This repository contains a data analysis pipeline and a Streamlit-based dashboard designed to analyze health metrics from 33 respondents of a 2016 Fitbit survey. The project investigates relationships between physical activity, sleep quality, and environmental factors like weather.
 
-## 📋 Table of Contents
+## Table of Contents
 
 * [Introduction]
-* [Database Schema]
+* [Features]
 * [Installation & Setup]
-* [Analysis Features]
-* [Dashboard Requirements]
-* [Usage]
+* [Data Sources]
+* [Dashboard Pages]
 
 ---
 
-## 📖 Introduction
+## Introduction
 
-The goal of this project is to provide business analysts and survey participants with a tool to explore health trends. The study uses usage data submitted via an Amazon survey to track calories, steps, heart rate, and sleep patterns.
+This project analyses FitBit usage data from 33 respondents to an Amazon survey in 2016. The goal is to provide interactive visualizations and statistical insights into participants' daily activity, sleep patterns, heart rate, weight, and more — presented through a multi-page Streamlit dashboard.
 
-## 🗄️ Database Schema
+## Features
 
-The analysis utilizes the `fitbit_database.db` SQLite database, which includes the following tables :
-
-* 
-**`daily_activity`**: Daily statistics for steps, calories, and distances.
-
-
-* 
-**`heart_rate`**: Measurements taken every 5 seconds.
-
-
-* 
-**`minute_sleep`**: Minute-by-minute sleep state logs.
-
-
-* 
-**`weight_log`**: Logs for weight, BMI, and body fat percentage.
-
-
-* 
-**`hourly_calories`, `hourly_steps`, `hourly_intensity**`: Temporal data for granular analysis .
-
-
+* Individual user profiles — filter by user ID and date range to explore personal metrics
+* Calories & steps tracking — daily calorie burn, step counts, and activity breakdowns
+* OLS regression — steps-to-calories regression model with per-user effects (R² = 0.793)
+* Sleep analysis — distribution of sleep durations, weekday vs. weekend comparisons, and individual timelines
+* Weight & BMI monitoring — time-series plots with overweight threshold reference
+* Heart rate & exercise intensity — high-resolution heart rate data combined with intensity metrics
+* Time-of-day analysis — average steps, calories, and sleep broken down into 4-hour blocks
+* Weather impact analysis — correlation between Chicago weather (rain, temperature) and activity levels
+* Cross-metric correlation heatmap — steps, calories, sedentary time, and sleep
 
 ---
 
@@ -63,78 +49,62 @@ pip install pandas matplotlib seaborn sqlite3 statsmodels requests streamlit
 ```
 
 
-3. **Database File**:
-Ensure `fitbit_database.db` is located in the root directory of the project.
-
-
-
----
-
-## 🔬 Analysis Features
-
-The `part3_stu.py` script performs several statistical investigations:
-
-* 
-**Sleep Duration Regression**: Analyzes the relationship between active minutes (Very, Fairly, and Lightly active) and sleep duration.
-
-
-* 
-**Sedentary vs. Sleep**: A linear regression investigating how sedentary time affects rest, including Q-Q plots to verify normal distribution of errors.
-
-
-* 
-**4-Hour Time Blocks**: Aggregates activity into 4-hour windows (0-4, 4-8, etc.) to visualize daily patterns.
-
-
-* 
-**Weather Integration**: Uses the **Visual Crossing WebAPI** to correlate Chicago weather (temperature/precipitation) with participant activity levels .
-
-
-* 
-**Weight Data Wrangling**: Resolves missing BMI and weight values using the $kg/m^{2}$ formula instead of deleting records.
-
-
-
----
-
-## 📊 Dashboard Requirements
-
-The Streamlit dashboard (`dashboard.py`) meets the following criteria :
-
-* 
-**Opening Page**: General research statistics with both numerical and graphical summaries.
-
-
-* 
-**Individual Drill-down**: A sidebar selector to view detailed statistics for a specific Participant ID.
-
-
-* 
-**Time Components**: Filters for specific date ranges and time-of-day analysis.
-
-
-* 
-**Sleep Analysis**: A dedicated section to deduce which variables (like sedentary time or activity) affect sleep duration.
-
-
-
----
-
-## 🚀 Usage
-
-### To run the Analysis Script:
-
+3. **Running the Dashboard**:
 ```bash
-python scripts/part3_stu.py
+streamlit run part5.py
 
 ```
 
-### To launch the Dashboard:
+---
 
-```bash
-streamlit run scripts/dashboard.py
+## Data Sources
 
-```
+The SQLite database (`fitbit_database.db`) contains the following tables:
+
+| Table              | Description                                              |
+|--------------------|----------------------------------------------------------|
+| `daily_activity`   | Daily totals for steps, distance, calories, activity     |
+| `heart_rate`       | Heart rate measured every 5 seconds                      |
+| `hourly_calories`  | Calories burned per hour                                 |
+| `hourly_intensity` | Exercise intensity per hour (total and average)          |
+| `hourly_steps`     | Step count per hour                                      |
+| `minute_sleep`     | Sleep state logged every minute                          |
+| `weight_log`       | Weight, body fat %, and BMI measurements                 |
+
+Weather data for Chicago (April 2016) was sourced from
+[Visual Crossing](https://www.visualcrossing.com/weather-query-builder/).
+
+---
+
+## Dashboard Pages
+
+### 🏠 Dashboard — General Overview
+- Population-level statistics: average steps, calories, sleep, and distance
+- Activity frequency by day of the week
+- Correlation heatmap between key metrics
+- Weather impact on high-intensity activity
+
+### 👤 Individual
+- Select a user by ID and date range
+- Daily calories burned, step counts, activity breakdown
+- Steps → Calories regression with per-user line
+- Weight and BMI over time
+- Heart rate and exercise intensity timeline
+
+### 😴 Sleep
+- Population sleep distribution histogram
+- Average sleep by weekday (with weekend highlighting)
+- OLS regression: sedentary minutes vs. sleep duration
+- Q-Q plot for normality check of residuals
+- Individual sleep timeline with 7-hour target reference
+
+### 🕐 Time of Day
+- Average steps, calories, and sleep broken into 4-hour blocks
+  (0–4, 4–8, 8–12, 12–16, 16–20, 20–24)
+
+### 📊 Data
+- Raw table explorer for all database tables
+
 
 ---
 
@@ -144,4 +114,5 @@ Developed by Group 3.
 
 * **Alan Chen**
 * **Ruud**
-* **Figo**
+* **Vigo**
+* **Mousse**
