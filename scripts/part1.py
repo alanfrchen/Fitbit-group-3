@@ -16,7 +16,19 @@ unique_users = database["Id"].nunique()
 print("Number of unique users:", unique_users)
 
 total_distance_by_user = database.groupby("Id", as_index=False)["TotalDistance"].sum()
+total_distance_by_user = total_distance_by_user.sort_values(by="TotalDistance")
 print(total_distance_by_user)
+plt.bar(total_distance_by_user["Id"].astype(str),
+        total_distance_by_user["TotalDistance"])
+
+plt.xlabel("User ID")
+plt.ylabel("Total Distance")
+plt.title("Total distance per user")
+
+plt.xticks(rotation=90)
+plt.tight_layout()
+
+plt.show()
 
 database["ActivityDate"] = pd.to_datetime(database["ActivityDate"], errors="coerce")
 
@@ -51,31 +63,30 @@ def user_friendly(user_id, start_date=None, end_date=None):
     plt.show()
 
 
-def lazy_sunday():
+def lazy_final_day():
     ids = database["Id"].unique()
     lasts = []
     for id in ids:
         last = database.loc[database["Id"] == id, "Calories"].to_list()[-1]
         lasts.append(last)
-        print(last)
     lasts_averages = sum(lasts)/len(lasts) 
+    overall_average = database["Calories"].mean()
     plt.figure(figsize=(10,5))
     plt.bar(ids.astype(str), lasts)
     plt.axhline(y=lasts_averages, color='red', linestyle=':', label = f"average calories burnt last day ({round(lasts_averages,1)})")
-    plt.xlabel("User Id from de pauper luie mensjes")
+    plt.axhline(y=overall_average, color='green', linestyle=':', label = f"average calories burnt in general ({round(overall_average,1)})")
+    plt.xlabel("User Id")
     plt.ylabel("Calories burnt")
-    plt.title("Calories burnt last day")
+    plt.title("Calories burnt final day of user activity")
     plt.xticks(rotation=90)
     plt.tight_layout()
     plt.legend()
     plt.show()
-    # plt.plot(last_values["Id"].astype(str), last_values["Calories"], marker="o")
-# user_friendly(1927972279)
-# lazy_sunday()
+
+lazy_final_day()
 user_friendly(1927972279, start_date="2016-04-01", end_date="2016-04-11")
 
-
-database = pd.read_csv("daily_acivity.csv")
+database = pd.read_csv("daily_activity.csv")
 unique_users = database["Id"].nunique()
 print("Number of unique users:", unique_users)
 
